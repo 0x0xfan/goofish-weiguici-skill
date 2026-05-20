@@ -26,9 +26,12 @@ GitHub 地址：https://github.com/0x0xfan/goofish-weiguici-skill
 1. clone 这个仓库；
 2. 找到里面的 xianyu-prohibited-checker 文件夹；
 3. 把 xianyu-prohibited-checker 复制到我的 Codex skills 目录；
-4. Windows 的 Codex skills 目录通常是 C:\Users\我的用户名\.codex\skills\；
+4. 请先判断我的系统：
+   - Windows 的 Codex skills 目录通常是 C:\Users\我的用户名\.codex\skills\
+   - macOS / Linux 的 Codex skills 目录通常是 ~/.codex/skills/
 5. 安装后帮我确认这个文件存在：
-   C:\Users\我的用户名\.codex\skills\xianyu-prohibited-checker\SKILL.md
+   - Windows: C:\Users\我的用户名\.codex\skills\xianyu-prohibited-checker\SKILL.md
+   - macOS / Linux: ~/.codex/skills/xianyu-prohibited-checker/SKILL.md
 6. 然后用一个标题测试：
    Java编程作业辅导与项目代做
 7. 如果能判断为高风险，说明部署成功。
@@ -36,7 +39,7 @@ GitHub 地址：https://github.com/0x0xfan/goofish-weiguici-skill
 注意：只需要部署 skill，不要改我的其他文件。
 ```
 
-复制给 AI 时，把 `我的用户名` 换成你电脑上的真实用户名；如果你不知道用户名，也可以让 AI 自动识别。
+复制给 AI 时，把 `我的用户名` 换成你电脑上的真实用户名；如果你不知道用户名，也可以让 AI 自动识别。Mac 用户一般不用改 `~/.codex/skills/` 里的 `~`，它会自动指向你的用户目录。
 
 如果你的 AI 能操作终端，也可以让它执行：
 
@@ -53,7 +56,8 @@ goofish-weiguici-skill\xianyu-prohibited-checker
 到：
 
 ```text
-C:\Users\你的用户名\.codex\skills\
+Windows: C:\Users\你的用户名\.codex\skills\
+macOS / Linux: ~/.codex/skills/
 ```
 
 ## 人工安装
@@ -72,16 +76,25 @@ xianyu-prohibited-checker
 
 3. 粘贴到 Codex skills 目录。
 
-Windows 常见位置：
+常见位置：
 
 ```text
-C:\Users\你的用户名\.codex\skills\
+Windows: C:\Users\你的用户名\.codex\skills\
+macOS / Linux: ~/.codex/skills/
 ```
 
 安装成功后应该能看到：
 
 ```text
-C:\Users\你的用户名\.codex\skills\xianyu-prohibited-checker\SKILL.md
+Windows: C:\Users\你的用户名\.codex\skills\xianyu-prohibited-checker\SKILL.md
+macOS / Linux: ~/.codex/skills/xianyu-prohibited-checker/SKILL.md
+```
+
+macOS / Linux 也可以直接用命令复制：
+
+```bash
+mkdir -p ~/.codex/skills
+cp -R goofish-weiguici-skill/xianyu-prohibited-checker ~/.codex/skills/
 ```
 
 ## 怎么使用
