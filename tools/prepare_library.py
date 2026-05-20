@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import re
 import unicodedata
+import argparse
 from pathlib import Path
 
 
@@ -67,10 +68,10 @@ def split_terms(text: str) -> list[str]:
     return items
 
 
-def find_source_file(marker: str) -> Path:
+def find_source_file(source_dir: Path, marker: str) -> Path:
     files = [
         path
-        for path in SOURCE_DIR.glob("*.txt")
+        for path in source_dir.glob("*.txt")
         if marker in path.stem and "ocr" not in path.stem
     ]
     if len(files) != 1:
@@ -78,8 +79,8 @@ def find_source_file(marker: str) -> Path:
     return files[0]
 
 
-def clean_official_rules() -> None:
-    candidates = list(SOURCE_DIR.glob("*_ocr.txt"))
+def clean_official_rules(source_dir: Path, output_dir: Path) -> None:
+    candidates = list(source_dir.glob("*_ocr.txt"))
     if not candidates:
         return
 
@@ -106,21 +107,39 @@ def clean_official_rules() -> None:
         else:
             joined[-1] += line
 
-    (OUTPUT_DIR / "闲鱼官方规则2025-12月版.txt").write_text(
+    (output_dir / "闲鱼官方规则2025-12月版.txt").write_text(
         "\n".join(joined) + "\n",
         encoding="utf-8",
     )
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Clean and deduplicate Xianyu prohibited-term source files.")
+    parser.add_argument("--source-dir", type=Path, default=SOURCE_DIR, help="Directory containing raw source txt/OCR files.")
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT_DIR, help="Directory for cleaned output files.")
+    return parser.parse_args()
+
+
 def main() -> None:
-    OUTPUT_DIR.mkdir(exist_ok=True)
+    args = parse_args()
+    source_dir = args.source_dir.resolve()
+    output_dir = args.output_dir.resolve()
+
+    if not source_dir.exists():
+        raise SystemExit(
+            f"Source directory not found: {source_dir}\n"
+            "This repository keeps only the final Skill reference files. "
+            "To rebuild the library, create the raw source directory or pass --source-dir."
+        )
+
+    output_dir.mkdir(exist_ok=True)
 
     stats: list[tuple[str, int, int, int, str]] = []
     combined: dict[str, dict[str, object]] = {}
     internal_dupes: dict[str, list[tuple[str, int, int]]] = {}
 
     for key, label, marker in CATEGORIES:
-        source = find_source_file(marker)
+        source = find_source_file(source_dir, marker)
         terms = split_terms(source.read_text(encoding="utf-8-sig"))
         seen: dict[str, int] = {}
         unique_terms: list[str] = []
@@ -156,16 +175,16 @@ def main() -> None:
             if isinstance(variants, set):
                 variants.add(term)
 
-        (OUTPUT_DIR / f"{label}.txt").write_text(
+        (output_dir / f"{label}.txt").write_text(
             "\n".join(unique_terms) + "\n",
             encoding="utf-8",
         )
         stats.append((label, len(terms), len(unique_terms), len(duplicate_terms), source.name))
         internal_dupes[label] = duplicate_terms
 
-    clean_official_rules()
+    clean_official_rules(source_dir, output_dir)
 
-    with (OUTPUT_DIR / "combined_terms.tsv").open("w", encoding="utf-8", newline="") as file:
+    with (output_dir / "combined_terms.tsv").open("w", encoding="utf-8", newline="") as file:
         writer = csv.writer(file, delimiter="\t")
         writer.writerow(["term", "normalized", "categories", "sources", "variants"])
         for norm, entry in combined.items():
@@ -218,12 +237,12 @@ def main() -> None:
         for term, first, index in dupes:
             report.append(f"- {term}（首次位置 {first}，重复位置 {index}）")
 
-    (OUTPUT_DIR / "duplicate_report.md").write_text(
+    (output_dir / "duplicate_report.md").write_text(
         "\n".join(report) + "\n",
         encoding="utf-8",
     )
 
-    print(f"output_dir={OUTPUT_DIR}")
+    print(f"output_dir={output_dir}")
     for row in stats:
         print(row)
     print(f"combined_unique={len(combined)}")

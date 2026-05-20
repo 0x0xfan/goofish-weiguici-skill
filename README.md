@@ -142,10 +142,10 @@ xianyu-prohibited-checker/
   references/official_rules_summary.md  官方规则和处罚样例摘要
   references/official_rules_2025-12.txt OCR 后的官方规则文本
 
-违规库/                                  原始词库
-违规库_整理/                             清洗、去重后的词库
 tools/prepare_library.py                 词库整理脚本
 ```
+
+仓库里只保留 Skill 运行需要的最终词库。原始词库和中间整理目录不再单独保留，避免重复。
 
 ## 怎么更新词库
 
@@ -207,4 +207,3 @@ git commit -m "Update xianyu risk rules"
 - `CAD图纸代画`：高风险
 - `写作技巧学习资料`：通常不直接违规
 - `论文润色指导`：高风险
-
