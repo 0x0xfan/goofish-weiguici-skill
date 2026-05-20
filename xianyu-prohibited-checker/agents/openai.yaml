@@ -1,0 +1,4 @@
+interface:
+  display_name: "闲鱼违禁词检测"
+  short_description: "检测闲鱼商品名和描述中的违禁、版权、盗版等发布风险提示"
+  default_prompt: "Use $xianyu-prohibited-checker to check whether this Xianyu product title has prohibited-word risk."
